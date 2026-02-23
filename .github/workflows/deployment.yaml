@@ -8,6 +8,9 @@ on:
         required: true
         description: "Helm Chart Environment"
 
+    secrets:
+      GH_PAT:
+        required: false
 jobs:
   generate-release-tag:
     uses: ./.github/workflows/generate-release-tag.yaml
