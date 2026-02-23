@@ -14,28 +14,16 @@ jobs:
     secrets: inherit
 
   notify-deployment-start:
-    runs-on: ubuntu-latest
+    if: ${{ inputs.helm_env == 'agile' }}
     needs: generate-release-tag
-    steps:
-      - name: Checkout caller repo
-        uses: actions/checkout@v4
-
-      - name: Checkout devops-tools repo
-        uses: actions/checkout@v4
-        with:
-          repository: nkumar88/devops-tools
-          path: support
-          ref: main
-
-      - name: Notify deployment start
-        if: ${{ inputs.helm_env == 'agile' }}
-        uses: nkumar88/devops-tools/github/workflows/notify-events-new.yaml@main
-        with:
-          state: "running"
-          release_tag: ${{ needs.generate-release-tag.outputs.release_tag}}
-          title: "<b>Deployment Started.</b>"
-          message: "<b>React Portal Deployment started in ${{ inputs.helm_env}} environment.</b>"
-          TEAMS_WEBHOOK: ${{ secrets.TEAMS_WEBHOOK }}
+    uses: nkumar88/devops-tools/.github/workflows/notify-events-new.yaml@main
+    with:
+      state: "running"
+      release_tag: ${{ needs.generate-release-tag.outputs.release_tag}}
+      title: "<b>Deployment Started.</b>"
+      message: "<b>React Portal Deployment started in ${{ inputs.helm_env}} environment.</b>"
+    secrets:
+      TEAMS_WEBHOOK: ${{ secrets.TEAMS_WEBHOOK }}
 
   build-publish-docker:
     needs: generate-release-tag
