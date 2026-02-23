@@ -29,7 +29,7 @@ jobs:
 
       - name: Notify deployment start
         if: ${{ inputs.helm_env == 'agile' }}
-        uses: ./.github/workflows/notify-events-new.yaml
+        uses: nkumar88/devops-tools/github/workflows/notify-events-new.yaml@main
         with:
           state: "running"
           release_tag: ${{ needs.generate-release-tag.outputs.release_tag}}
@@ -88,7 +88,7 @@ jobs:
   port-logs:
     if: always()
     needs: [generate-release-tag, build-publish-docker, chart-tagger]
-    uses: ./.github/workflows/post-logs-to-elastic.yaml
+    uses: nkumar88/devops-tools/.github/workflows/post-logs-to-elastic.yaml@main
     with:
       release_tag: ${{ needs.generate-release-tag.outputs.release_tag}}
       helm_env: ${{ inputs.helm_env }}
