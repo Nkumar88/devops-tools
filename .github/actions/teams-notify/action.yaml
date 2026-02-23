@@ -22,6 +22,32 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Debug webhook url
+      shell: bash
+      run: |
+        echo "WEBHOOK_URL as printed:"
+        printf '[%s]\n' "$WEBHOOK_URL"
+
+        echo "WEBHOOK_URL repr (shows hidden chars):"
+        python - <<'PY'
+        import os
+        u=os.environ.get("WEBHOOK_URL","")
+        print(repr(u))
+        PY
+      env:
+        WEBHOOK_URL: ${{ inputs.webhook_url }}
+
+    - name: Sanitize and call webhook
+      shell: bash
+      run: |
+        url="$(printf '%s' "$WEBHOOK_URL" | tr -d '\r\n' | xargs)"
+        curl -sS -X POST \
+        -H "Content-Type: application/json" \
+        --data "$payload" \
+        "$url"
+      env:
+        WEBHOOK_URL: ${{ inputs }}
+
     - name: Post to Teams
       shell: bash
       env:
@@ -64,15 +90,5 @@ runs:
         "potentialAction": $actions
         }'
         )
-
-        echo "WEBHOOK_URL as printed:"
-        printf '[%s]\n' "$WEBHOOK_URL"
-
-        echo "WEBHOOK_URL repr (shows hidden chars):"
-        python - <<'PY'
-        import os
-        u=os.environ.get("WEBHOOK_URL","")
-        print(repr(u))
-        PY  
 
         curl -sS -X POST -H "Content-Type: application/json" --data "$payload" "$WEBHOOK_URL"
