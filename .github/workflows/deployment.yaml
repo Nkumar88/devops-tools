@@ -9,6 +9,23 @@ on:
         description: "Helm Chart Environment"
 
 jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check TEAMS_WEBHOOK is available (won't print it)
+        run: |
+          if [ -z "${{ secrets.TEAMS_WEBHOOK }}" ]; then
+            echo "TEAMS_WEBHOOK is EMPTY in this run"
+            exit 1
+          else
+            echo "TEAMS_WEBHOOK is present"
+          fi
+
+      - name: Notify dedicated teams channel
+        uses: nkumar88/devops-tools/.github/actions/teams-notify@main
+        with:
+          webhook_url: ${{ secrets.TEAMS_WEBHOOK }}
+
   generate-release-tag:
     uses: ./.github/workflows/generate-release-tag.yaml
     secrets: inherit
