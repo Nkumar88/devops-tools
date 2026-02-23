@@ -12,6 +12,12 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Show repo context
+        run: |
+          echo "repo=${{ github.repository }}"
+          echo "ref=${{ github.ref }}"
+          echo "workflow=${{ github.workflow }}"
+
       - name: Check TEAMS_WEBHOOK is available (won't print it)
         run: |
           if [ -z "${{ secrets.TEAMS_WEBHOOK }}" ]; then
