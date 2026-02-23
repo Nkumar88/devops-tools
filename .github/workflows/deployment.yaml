@@ -12,6 +12,13 @@ on:
       GH_PAT:
         required: false
 jobs:
+  prep:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: nkumar88/devops-tools
+
   generate-release-tag:
     uses: ./.github/workflows/generate-release-tag.yaml
     secrets: inherit
