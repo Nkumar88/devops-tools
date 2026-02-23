@@ -46,7 +46,7 @@ runs:
         --data "$payload" \
         "$url"
       env:
-        WEBHOOK_URL: ${{ inputs }}
+        WEBHOOK_URL: ${{ inputs.webhook_url }}
 
     - name: Post to Teams
       shell: bash
