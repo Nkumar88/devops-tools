@@ -18,12 +18,28 @@ on:
         required: true
       ELASTIC_INDEX:
         required: true
+      GH_APP_ID:
+        required: true
+      GH_APP_PRIVATE_KEY:
+        required: true
 
 jobs:
   port-job-logs-to-elastic:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Generate GitHub App Token
+        uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
+      - name: Configure Git Credentials
+        run: |
+          git config --global url."https://oauth2:${{ steps.app-token.outputs.token }}@github.com".insteadOf "https://github.com"
+
       - name: Checkout devops-tools
         uses: actions/checkout@v4
         with:
