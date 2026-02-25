@@ -37,7 +37,6 @@ jobs:
           owner: ${{ github.repository_owner }}
           repositories: |
             devops-tools
-            agile-deployment
 
       - name: Configure Git Credentials
         run: |
