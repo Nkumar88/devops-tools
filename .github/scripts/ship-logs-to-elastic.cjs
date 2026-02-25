@@ -30,6 +30,7 @@ module.exports = async ({ github, context, core }) => {
     const body = {
       "@timestamp": job.completed_at,
       job_name: job.name,
+      workflow: context.workflow,
       status: job.status,
       conclusion: job.conclusion,
       started_at: job.started_at,
