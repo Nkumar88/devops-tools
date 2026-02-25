@@ -35,6 +35,9 @@ jobs:
           app-id: ${{ secrets.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
+          repositories: |
+            devops-tools
+            agile-deployment
 
       - name: Configure Git Credentials
         run: |
