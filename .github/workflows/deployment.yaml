@@ -80,6 +80,10 @@ jobs:
     with:
       release_tag: ${{ needs.generate-release-tag.outputs.release_tag}}
       helm_env: ${{ inputs.helm_env }}
+    secrets:
+      ELASTIC_HOST: ${{ secrets.ELASTIC_HOST }}
+      ELASTIC_KEY: ${{ secrets.ELASTIC_KEY }}
+      ELASTIC_INDEX: ${{ secrets.ELASTIC_INDEX }}
 
   workflow-summary:
     name: Compute overall workflow state
