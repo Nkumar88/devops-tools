@@ -11,6 +11,13 @@ on:
         description: "Helm Chart Environment"
         type: string
         required: true
+    secrets:
+      ELASTIC_HOST:
+        required: true
+      ELASTIC_KEY:
+        required: true
+      ELASTIC_INDEX:
+        required: true
 
 jobs:
   port-job-logs-to-elastic:
