@@ -19,6 +19,10 @@ on:
       ELASTIC_INDEX:
         required: true
 
+permissions:
+  actions: read
+  contents: read
+
 jobs:
   port-job-logs-to-elastic:
     runs-on: ubuntu-latest
