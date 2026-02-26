@@ -11,53 +11,14 @@ on:
         description: "Helm Chart Environment"
         type: string
         required: true
-    secrets:
-      ELASTIC_HOST:
-        required: true
-      ELASTIC_KEY:
-        required: true
-      ELASTIC_INDEX:
-        required: true
-      GH_APP_ID:
-        required: true
-      GH_APP_PRIVATE_KEY:
-        required: true
 
 jobs:
   port-job-logs-to-elastic:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Generate GitHub App Token
-        uses: actions/create-github-app-token@v1
-        id: app-token
-        with:
-          app-id: ${{ secrets.GH_APP_ID }}
-          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-          owner: ${{ github.repository_owner }}
-          repositories: |
-            devops-tools
-
-      - name: Checkout devops-tools
-        uses: actions/checkout@v4
-        with:
-          repository: nkumar88/devops-tools
-          ref: main
-          path: devops-tools
-          persist-credentials: false # important to prevent token from being used in subsequent steps accidentally
-          fetch-depth: 1
-
       - name: Ship job results
-        uses: actions/github-script@v7
-        env:
-          ELASTIC_INDEX: ${{ secrets.ELASTIC_INDEX }}
-          ELASTIC_HOST: ${{ secrets.ELASTIC_HOST }}
-          ELASTIC_KEY: ${{ secrets.ELASTIC_KEY }}
-          RELEASE_TAG: ${{ inputs.release_tag }}
-          HELM_ENV: ${{ inputs.helm_env }}
-          ACTOR: ${{ github.actor }}
+        uses: ./github/workflows/ship-job-results-to-elastic.yaml
         with:
-          script: |
-            const path = require('path')
-            const script = require(path.join(process.env.GITHUB_WORKSPACE, 'devops-tools/.github/scripts/ship-logs-to-elastic.cjs'))
-            await script({ github, context, core })
+          release_tag: ${{ inputs.release_tag }}
+          helm_env: ${{ inputs.helm_env }}
