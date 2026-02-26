@@ -74,6 +74,9 @@ jobs:
               }'
 
   port-logs:
+    permissions:
+      actions: read
+      contents: read
     if: always()
     needs: [generate-release-tag, build-publish-docker, chart-tagger]
     uses: ./.github/workflows/post-logs-to-elastic.yaml
