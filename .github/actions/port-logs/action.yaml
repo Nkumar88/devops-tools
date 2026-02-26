@@ -28,6 +28,13 @@ runs:
   using: "composite"
   steps:
     - name: Ship job results
+      env:
+        ELASTIC_HOST: ${{ inputs.elastic_host }}
+        ELASTIC_KEY: ${{ inputs.elastic_key }}
+        ELASTIC_INDEX: ${{ inputs.elastic_index }}
+        HELM_ENV: ${{ inputs.helm_env }}
+        RELEASE_TAG: ${{ inputs.release_tag }}
+        ACTOR: ${{ github.actor }}
       uses: actions/github-script@v7
       with:
         script: |
@@ -80,10 +87,3 @@ runs:
                main().catch(err => {
                    core.setFailed(err.message);
                });
-        env:
-        ELASTIC_HOST: ${{ inputs.elastic_host }}
-        ELASTIC_KEY: ${{ inputs.elastic_key }}
-        ELASTIC_INDEX: ${{ inputs.elastic_index }}
-        HELM_ENV: ${{ inputs.helm_env }}
-        RELEASE_TAG: ${{ inputs.release_tag }}
-        ACTOR: ${{ github.actor }}
