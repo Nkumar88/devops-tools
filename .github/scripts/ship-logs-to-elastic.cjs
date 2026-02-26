@@ -41,7 +41,7 @@ module.exports = async ({ github, context, core }) => {
       release_id: process.env.RELEASE_TAG,
       env: process.env.HELM_ENV,
       actor: process.env.ACTOR,
-      origin: "github",
+      origin: "github"
     };
 
     const response = await fetch(elasticUrl, {
