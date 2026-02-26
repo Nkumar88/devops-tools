@@ -17,8 +17,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Ship job results
-        uses: ./github/workflows/ship-job-results-to-elastic.yaml
+        uses: nkumar88/devops-tools/.github/actions/port-logs@main
         with:
           release_tag: ${{ inputs.release_tag }}
           helm_env: ${{ inputs.helm_env }}
+          elastic_host: ${{ secrets.ELASTIC_HOST }}
+          elastic_key: ${{ secrets.ELASTIC_KEY }}
+          elastic_index: ${{ secrets.ELASTIC_INDEX }}
