@@ -18,6 +18,12 @@ inputs:
   button_url:
     required: false
     default: ""
+  deployment_status_button_text:
+    required: false
+    default: "View deployment status"
+  deployment_status_button_url:
+    required: false
+    default: ""
 
 runs:
   using: "composite"
@@ -57,6 +63,9 @@ runs:
         COLOR: ${{ inputs.color }}
         BUTTON_TEXT: ${{ inputs.button_text }}
         BUTTON_URL: ${{ inputs.button_url }}
+        DEPLOYMENT_STATUS_BUTTON_TEXT: ${{ inputs.deployment_status_button_text }}
+        DEPLOYMENT_STATUS_BUTTON_URL: ${{ inputs.deployment_status_button_url }}
+
       run: |
         set -euo pipefail
 
@@ -71,6 +80,22 @@ runs:
         )
         else
           ACTIONS="[]"
+        fi
+
+
+        if [ -n "${DEPLOYMENT_STATUS_BUTTON_URL}" ]; then
+          DEPLOYMENT_STATUS_ACTIONS=$(cat <<EOF
+        [{
+        "@type": "OpenUri",
+        "name": "${DEPLOYMENT_STATUS_BUTTON_TEXT}",
+        "targets": [{ "os": "default", "uri": "${DEPLOYMENT_STATUS_BUTTON_URL}" }]
+        }]
+        EOF
+        )
+          ACTIONS="$(jq -n \
+            --argjson actions "$ACTIONS" \
+            --argjson deployment_status_actions "$DEPLOYMENT_STATUS_ACTIONS" \
+            '($actions + $deployment_status_actions)')"
         fi
 
         payload=$(jq -n \
