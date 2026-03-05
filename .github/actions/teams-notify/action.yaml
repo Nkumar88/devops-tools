@@ -114,6 +114,12 @@ runs:
           , "targets":[{"os":"default","uri":$url}]
           };
 
+        def btnviewrun:
+          if ($button_url|length) > 0 then [openuri($button_text; $button_url)] else [] end;
+
+        def btndeploymentstatus:
+          if ($ds_button_url|length) > 0 then [openuri($ds_button_text; $ds_button_url)] else [] end;
+
         {
           "@type": $type,
           "@context": $context,
@@ -122,10 +128,7 @@ runs:
           "title": $title,
           "text": $message,
           "potentialAction":
-            ( []
-              + (if ($button_url|length) > 0 then [openuri($button_text; $button_url)] else [] end)
-              + (if ($ds_button_url|length) > 0 then [openuri($ds_button_text; $ds_button_url)] else [] end)
-          )
+            ((if ($title | contains("Deployment Started.")) then btnviewrun else (btnviewrun + btndeploymentstatus) end))
         }'
         )"
         curl -sS -X POST -H "Content-Type: application/json" --data "$payload" "$WEBHOOK_URL"
