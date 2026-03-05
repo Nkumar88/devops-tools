@@ -8,6 +8,12 @@ on:
         required: true
         description: "Helm Chart Environment"
 
+permissions:
+  actions: read
+  contents: read
+  packages: read
+  id-token: write
+
 jobs:
   generate-release-tag:
     uses: ./.github/workflows/generate-release-tag.yaml
