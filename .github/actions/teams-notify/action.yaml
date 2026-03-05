@@ -96,23 +96,36 @@ runs:
           DEPLOYMENT_STATUS_ACTIONS="[]"
         fi
 
-        payload=$(jq -n \
-        --arg type "MessageCard" \
-        --arg context "https://schema.org/extensions" \
-        --arg color "$COLOR" \
-        --arg title "$TITLE" \
-        --arg message "$MESSAGE" \
-        --argjson actions "$ACTIONS" \
-        --argjson deployment_status_actions "$DEPLOYMENT_STATUS_ACTIONS" \
-        '{
-        "@type": $type,
-        "@context": $context,
-        "themeColor": $color,
-        "summary": $title,
-        "title": $title,
-        "text": $message,
-        "potentialAction": ($actions + $deployment_status_actions)
-        }'
-        )
+        payload="$(
+        jq -n \
+          --arg type "MessageCard" \
+          --arg context "https://schema.org/extensions" \
+          --arg color "$COLOR" \
+          --arg title "$TITLE" \
+          --arg message "$MESSAGE" \
+          --arg button_text "${BUTTON_TEXT:-}" \
+          --arg button_url "${BUTTON_URL:-}" \
+          --arg ds_button_text "${DEPLOYMENT_STATUS_BUTTON_TEXT:-}" \
+          --arg ds_button_url "${DEPLOYMENT_STATUS_BUTTON_URL:-}" \
+        '
+        def openuri($name; $url):
+          { "@type":"OpenUri"
+          ,"name": $name
+          , "targets":[{"os":"default","uri":$url}]
+          };
 
+        {
+          "@type": $type,
+          "@context": $context,
+          "themeColor": $color,
+          "summary": $title,
+          "title": $title,
+          "text": $message,
+          "potentialAction":
+            ( []
+              + (if ($button_url|length) > 0 then [openuri($button_text; $button_url)] else [] end)
+              + (if ($ds_button_url|length) > 0 then [openuri($ds_button_text; $ds_button_url)] else [] end)
+          )
+        }'
+        )"
         curl -sS -X POST -H "Content-Type: application/json" --data "$payload" "$WEBHOOK_URL"
