@@ -92,6 +92,7 @@ runs:
         }]
         EOF
         )
+        else
           DEPLOYMENT_STATUS_ACTIONS="[]"
         fi
 
