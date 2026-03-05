@@ -92,10 +92,7 @@ runs:
         }]
         EOF
         )
-          ACTIONS="$(jq -n \
-            --argjson actions "$ACTIONS" \
-            --argjson deployment_status_actions "$DEPLOYMENT_STATUS_ACTIONS" \
-            '($actions + $deployment_status_actions)')"
+          DEPLOYMENT_STATUS_ACTIONS="[]"
         fi
 
         payload=$(jq -n \
@@ -105,6 +102,7 @@ runs:
         --arg title "$TITLE" \
         --arg message "$MESSAGE" \
         --argjson actions "$ACTIONS" \
+        --argjson deployment_status_actions "$DEPLOYMENT_STATUS_ACTIONS" \
         '{
         "@type": $type,
         "@context": $context,
@@ -112,7 +110,7 @@ runs:
         "summary": $title,
         "title": $title,
         "text": $message,
-        "potentialAction": $actions
+        "potentialAction": ($actions + $deployment_status_actions)
         }'
         )
 
